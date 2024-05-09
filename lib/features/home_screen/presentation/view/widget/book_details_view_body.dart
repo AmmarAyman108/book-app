@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookDetailsViewBody extends StatefulWidget {
   const BookDetailsViewBody({super.key, required this.book});
-  final BookModel book;
+  final Book book;
 
   @override
   State<BookDetailsViewBody> createState() => _BookDetailsViewBodyState();
@@ -108,7 +108,7 @@ class _BookDetailsViewBodyState extends State<BookDetailsViewBody> {
                 ),
               ),
             ),
-            const ImageBookListView(),
+            ImageBookListView(),
             const SliverToBoxAdapter(
               child: SizedBox(
                 height: 20,

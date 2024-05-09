@@ -17,7 +17,7 @@ class CustomAppBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image.asset(
-            AssetsData.logo,
+            Images.logo,
             height: 22,
           ),
           IconButton(

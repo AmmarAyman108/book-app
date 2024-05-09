@@ -6,13 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ImageBookListView extends StatelessWidget {
-  const ImageBookListView({
+  ImageBookListView({
     super.key,
   });
-
+  final ScrollController? scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SimilarBooksCubit, SimilarBooksState>(
+    return BlocConsumer<SimilarBooksCubit, SimilarBooksState>(
+      listener: (context, state) {
+        if (state is SimilarBooksSuccess) {
+          if (state.bookList.isNotEmpty) {
+            autoScrollToEnd();
+          }
+        }
+      },
       builder: (context, state) {
         if (state is SimilarBooksFailure) {
           return SliverToBoxAdapter(
@@ -26,6 +33,7 @@ class ImageBookListView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: ListView.builder(
+              controller: scrollController,
                   itemCount: state.bookList.length,
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
@@ -49,5 +57,15 @@ class ImageBookListView extends StatelessWidget {
         }
       },
     );
+  }
+
+  Future<void> autoScrollToEnd() async {
+    await Future.delayed(const Duration(seconds: 1), () {
+      scrollController!.animateTo(
+        scrollController!.position.maxScrollExtent,
+        duration: const Duration(seconds: 25),
+        curve: Curves.easeInOut,
+      );
+    });
   }
 }

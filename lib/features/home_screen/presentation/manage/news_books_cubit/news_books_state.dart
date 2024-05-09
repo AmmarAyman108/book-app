@@ -8,7 +8,7 @@ final class NewsBooksInitial extends NewsBooksState {}
 final class NewsBooksLoading extends NewsBooksState {}
 
 final class NewsBooksSuccess extends NewsBooksState {
-  final List<BookModel> bookList;
+  final List<Book> bookList;
   NewsBooksSuccess({required this.bookList});
 }
 

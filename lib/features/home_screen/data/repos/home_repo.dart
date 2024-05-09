@@ -3,7 +3,8 @@ import 'package:book_app/features/home_screen/data/models/book_model/book_model.
 import 'package:dartz/dartz.dart';
 
 abstract class HomeRepo {
-  Future<Either<Failure, List<BookModel>>> fetchFeaturedBooks();
-  Future<Either<Failure, List<BookModel>>> fetchNewsBooks();
-  Future<Either<Failure, List<BookModel>>> fetchSimilarBooks({required String category});
+  Future<Either<Failure, List<Book>>> fetchFeaturedBooks();
+  Future<Either<Failure, List<Book>>> fetchNewsBooks();
+  Future<Either<Failure, List<Book>>> fetchSimilarBooks(
+      {required String category});
 }

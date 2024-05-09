@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
       onChanged: onChanged,
       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
       decoration: InputDecoration(
-        contentPadding: const EdgeInsets.all(20),
+        contentPadding: const EdgeInsets.all(15),
         suffixIcon: const Icon(
           FontAwesomeIcons.magnifyingGlass,
           color: Colors.white,
@@ -24,7 +24,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(500),
           borderSide: const BorderSide(
-            color: Colors.white,
+            color: Colors.blue,
             width: 2,
           ),
         ),

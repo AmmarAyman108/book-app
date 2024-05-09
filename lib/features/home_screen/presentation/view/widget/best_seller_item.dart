@@ -5,13 +5,14 @@ import 'package:book_app/features/home_screen/presentation/view/widget/custom_bo
 import 'package:book_app/features/home_screen/presentation/view/widget/image_book_item.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ItemTile extends StatelessWidget {
   const ItemTile({
     super.key,
     required this.book,
   });
-  final BookModel book;
+  final Book book;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -34,7 +35,9 @@ class ItemTile extends StatelessWidget {
                       child: Text(book.volumeInfo!.title!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: Styles.textStyle20),
+                          style: Styles.textStyle20.copyWith(
+                          //  fontFamily: GoogleFonts.bitter().fontFamily,
+                          )),
                     ),
                     Text(
                       book.volumeInfo!.authors![0],

@@ -5,36 +5,42 @@ import 'package:book_app/features/home_screen/data/repos/home_repo.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
+
+//Single Responsibility Principle
 class HomeRepoImpl implements HomeRepo {
   @override
-  Future<Either<Failure, List<BookModel>>> fetchFeaturedBooks() async {
-    return FeaturedBooks.get();
+  Future<Either<Failure, List<Book>>> fetchFeaturedBooks() async {
+    return await FeaturedBooks.getFeaturedBooks();
   }
 
   @override
-  Future<Either<Failure, List<BookModel>>> fetchNewsBooks() async {
-    return NewsBooks.get();
+  Future<Either<Failure, List<Book>>> fetchNewsBooks() async {
+    return await NewsBooks.getNewsBooks();
   }
 
   @override
-  Future<Either<Failure, List<BookModel>>> fetchSimilarBooks(
-      {required String category}) async {
-    return FeaturedBooks.get();
+  Future<Either<Failure, List<Book>>> fetchSimilarBooks({
+    required String category,
+  }) async {
+    return await FeaturedBooks.getFeaturedBooks();
   }
 }
 
-class NewsBooks {
-  static Future<Either<Failure, List<BookModel>>> get() async {
-    try {
-      var json = await Api().get(
-        endPoint: '/volumes',
-        queryParameters: {
-          'q': 'programming',
-        },
-      );
 
-      List<BookModel> booksListModel = covertMapToModel(json);
-      return right(booksListModel);
+//Clean Code
+class NewsBooks {
+  static Future<Either<Failure, List<Book>>> getNewsBooks() async {
+    try {
+      return right(
+        convertJsonToModel(
+          await getJsonData(
+            endPoint: '/volumes',
+            queryParameters: {
+              'q': 'programming',
+            },
+          ),
+        ),
+      );
     } on DioException catch (e) {
       return left(ServerFailure.fromDioException(e));
     } catch (e) {
@@ -43,28 +49,20 @@ class NewsBooks {
   }
 }
 
-List<BookModel> covertMapToModel(json) {
-  List<BookModel> booksListModel = [];
-  for (var element in json['items']) {
-    booksListModel.add(BookModel.fromJson(element));
-  }
-  return booksListModel;
-}
-
 class FeaturedBooks {
-  static Future<Either<Failure, List<BookModel>>> get() async {
+  static Future<Either<Failure, List<Book>>> getFeaturedBooks() async {
     try {
-      var json = await Api().get(
-        endPoint: '/volumes',
-        queryParameters: {
-          'Filtering': 'free-ebooks',
-          'q': 'programming',
-        },
+      return right(
+        convertJsonToModel(
+          await getJsonData(
+            endPoint: '/volumes',
+            queryParameters: {
+              'Filtering': 'free-ebooks',
+              'q': 'programming',
+            },
+          ),
+        ),
       );
-
-      List<BookModel> booksListModel = covertMapToModel(json);
-
-      return right(booksListModel);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioException(e));
     } catch (e) {
@@ -74,23 +72,43 @@ class FeaturedBooks {
 }
 
 class SimilarBooks {
-  static Future<Either<Failure, List<BookModel>>> get() async {
+  static Future<Either<Failure, List<Book>>> getSimilarBooks() async {
     try {
-      var json = await Api().get(
-        endPoint: '/volumes',
-        queryParameters: {
-          'q': 'programming',
-          "Sorting": "relevance",
-          'Filtering': 'free-ebooks',
-        },
-      );
+      return right(
+        convertJsonToModel(
+          await getJsonData(
+            endPoint: '/volumes',
+            queryParameters: {
+              'Filtering': 'free-ebooks',
+              'q': 'programming',
 
-      List<BookModel> booksListModel = covertMapToModel(json);
-      return right(booksListModel);
+            },
+            
+          ),
+        ),
+      );
     } on DioException catch (e) {
       return left(ServerFailure.fromDioException(e));
     } catch (e) {
       return left(ServerFailure(errorMessage: e.toString()));
     }
   }
+}
+
+List<Book> convertJsonToModel(jsonData) {
+  List<Book> books = [];
+  for (var element in jsonData['items']) {
+    books.add(Book.fromJson(element));
+  }
+  return books;
+}
+
+
+Future<Map<String, dynamic>> getJsonData(
+    {required String endPoint, Map<String, dynamic>? queryParameters}) async {
+  Map<String, dynamic> jsonData = await Api().get(
+    endPoint: endPoint,
+    queryParameters: queryParameters,
+  );
+  return jsonData;
 }
